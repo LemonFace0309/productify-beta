@@ -25,7 +25,7 @@ const startTimer = new Command({
     embedWork
       .setTitle('Study time!')
       .setDescription(
-        `<I hope you enjoyed your break! But your homework isn't going to do itself <:PandaUWU:908492211820302377>\n
+        `I hope you enjoyed your break! But your homework isn't going to do itself <:PandaUWU:908492211820302377>\n
         Let's get that bread <:PandaCapitalist:908492210696224839>\n•\n•\n•
         To be added to the Pomodoro role, react to the pinned message in this channel! <:PandaLove:908492212659191888> <:PandaLove:908492212659191888>`
       )
@@ -38,7 +38,7 @@ const startTimer = new Command({
       .setTitle('Break time!')
       .setAuthor(sender.username, <string>sender.defaultAvatarURL, 'https://prepanywhere.com')
       .setDescription(
-        `<Great work so far <:PandaUmaru:908492212386541588> <:PandaUmaru:908492212386541588>\n
+        `Great work so far <:PandaUmaru:908492212386541588> <:PandaUmaru:908492212386541588>\n
         Feel free to stretch your muscles or take a much needed water break!\n
         See you in 5 minutes. <:PandaCuteJuice:908492211967111248>`
       )
