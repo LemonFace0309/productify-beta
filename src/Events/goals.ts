@@ -28,7 +28,7 @@ const Goals = new Event('messageCreate', async (client, message) => {
     user = await User.findOne({ userId: authorId });
     if (!user) {
       // creating new user
-      user = new User({ userId: authorId, goalsStreak: 1 });
+      user = new User({ userId: authorId, goalsStreak: 1, coins: 0 });
       user.save();
     } else {
       // updating user streak
