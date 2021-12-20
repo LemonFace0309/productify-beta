@@ -1,7 +1,7 @@
-import { GuildMember, TextChannel } from 'discord.js';
+import { GuildMember } from 'discord.js';
 
 import Command, { CommandType } from '../Structures/Command';
-import User, { UserDocument } from '../Models/User';
+import getOrCreateUser from '../utils/getOrCreateUser'; 
 
 const Give = new Command({
   name: 'give',
@@ -36,21 +36,16 @@ const Give = new Command({
 
     if (!userObj) return message.reply(`User does not exist!`);
 
-    let user: (UserDocument & { _id: any }) | null;
     try {
-      user = await User.findOne({ userId: userObj.id });
-      if (!user) {
-        // creating new user
-        user = new User({ userId: userObj.id, goalsStreak: 0, coins: amount });
-        await user.save();
-      } else {
-        // updating user coins
-        user.coins += amount;
-        await user.save();
-      }
-      const msg = await message.reply(`Gave ${amount} coins to ${userObj.user.username}`);
+      const user = await getOrCreateUser(userObj.id);
+
+      if (!user) return message.reply(`Unable to remove coins from ${userObj.user.username}`);
+
+      user.coins += amount;
+      await user.save();
+      const msg = await message.reply(`Success!💸 Gave ${amount} coins to ${userObj.user.username}`);
     } catch (err) {
-      console.log('Unable to get user:', err);
+      console.log('Unable to remove coins from user:', err);
     }
   },
 });

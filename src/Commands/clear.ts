@@ -5,7 +5,7 @@ import Command, { CommandType } from '../Structures/Command';
 const Clear = new Command({
   name: 'clear',
   description: 'Clear an ammount of messages',
-  type: CommandType.BOTH,
+  type: CommandType.SLASH,
   slashCommandOptions: [
     {
       name: 'amount',

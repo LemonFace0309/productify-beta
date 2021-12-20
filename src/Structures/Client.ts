@@ -8,6 +8,7 @@ dotenv.config();
 
 import Command from './Command';
 import Event from './Event';
+import Process from './Process';
 
 const intents = new Discord.Intents(['GUILDS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS']);
 
@@ -72,6 +73,15 @@ class Client extends Discord.Client {
         const eventObj: Event<keyof Discord.ClientEvents> = require(`../Events/${file}`);
         console.log(`Event ${eventObj.event} loaded`);
         this.on(eventObj.event, eventObj.run.bind(null, this));
+      });
+
+    // Initializing startup processes
+    fs.readdirSync(path.join(__dirname, '..', 'Processes'))
+      .filter((file) => /^.+(\.ts|\.js)$/.test(file))
+      .forEach((file) => {
+        const process: Process = require(`../Processes/${file}`);
+        console.log(`Process ${file} initialized`);
+        process.run(this);
       });
 
     this.login(token);
