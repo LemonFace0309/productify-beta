@@ -13,7 +13,7 @@ interface CommandOptions {
   description: string;
   permission: Discord.PermissionString;
   type: CommandType | string;
-  slashCommandOptions: Discord.ApplicationCommandOption[];
+  slashCommandOptions: Discord.ApplicationCommandOptionData[];
   run: (message: Discord.Message | Discord.CommandInteraction, args: string[], client: Client) => void;
 }
 
@@ -22,14 +22,14 @@ class Command {
   description: string;
   permission: Discord.PermissionString;
   type: CommandType;
-  slashCommandOptions: Discord.ApplicationCommandOption[];
+  slashCommandOptions: Discord.ApplicationCommandOptionData[];
   run: (message: Discord.Message | Discord.CommandInteraction, args: string[], client: Client) => void;
 
   constructor(options: CommandOptions) {
     this.name = options.name;
     this.description = options.description;
     this.permission = options.permission;
-    this.type = ['BOTH', 'SLASH', 'TEXT'].includes(options.type) ? options.type as CommandType : CommandType.TEXT;
+    this.type = ['BOTH', 'SLASH', 'TEXT'].includes(options.type) ? (options.type as CommandType) : CommandType.TEXT;
     this.slashCommandOptions = options.slashCommandOptions || [];
     this.run = options.run;
   }

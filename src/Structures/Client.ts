@@ -13,15 +13,17 @@ import Process from './Process';
 const intents = new Discord.Intents(['GUILDS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS']);
 
 class Client extends Discord.Client {
-  commands: Discord.Collection<string, Command>;
-  timers: Discord.Collection<string, NodeJS.Timer>
   readonly prefix: string;
+  commands: Discord.Collection<string, Command>;
+  timers: Discord.Collection<string, NodeJS.Timer>;
+  aniListUrl: string;
 
   constructor() {
     super({ intents });
+    this.prefix = process.env.PREFIX!;
     this.commands = new Discord.Collection();
     this.timers = new Discord.Collection();
-    this.prefix = process.env.PREFIX!;
+    this.aniListUrl = 'https://graphql.anilist.co';
   }
 
   start(token: string) {
