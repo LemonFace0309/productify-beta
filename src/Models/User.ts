@@ -1,9 +1,11 @@
 import mongoose from 'mongoose';
 
+import CharacterSchema, { CharacterDocument } from './Character';
 export interface UserDocument extends mongoose.Document {
   userId: string;
   goalsStreak: number;
   coins: number;
+  characters: CharacterDocument[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -22,6 +24,11 @@ const UserSchema = new mongoose.Schema<UserDocument>(
       type: Number,
       required: true,
       default: 0,
+    },
+    characters: {
+      type: [CharacterSchema],
+      required: true,
+      default: [],
     },
   },
   {

@@ -36,7 +36,6 @@ const Give = new Command({
           inline: true,
         },
       ])
-      // .setTimestamp();
 
     message.reply({ embeds: [embed] });
   },

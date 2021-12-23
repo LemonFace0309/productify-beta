@@ -10,7 +10,8 @@ const MessageCreate = new Event('messageCreate', (client, message) => {
   const command = client.commands.find((cmd) => cmd.name == args[0]);
 
   if (!command || ![CommandType.BOTH, CommandType.TEXT].includes(command.type)) {
-    return message.reply('That command is only available via slash command!');
+    // return message.reply('That command is only available via slash command!');
+    return;
   }
 
   const permission = message.member?.permissions.has(command.permission, true);
