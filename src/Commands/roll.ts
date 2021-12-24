@@ -14,12 +14,9 @@ query ($page: Int, $perPage: Int) {
       hasNextPage
       perPage
     }
-    characters {
+    characters (sort: FAVOURITES_DESC) {
       id
       name {
-        first
-        middle
-        last
         full
         native
         userPreferred
@@ -29,8 +26,10 @@ query ($page: Int, $perPage: Int) {
         large
         medium
       }
+      favourites
       age
       dateOfBirth {
+        year
         month
         day
       }
@@ -38,17 +37,11 @@ query ($page: Int, $perPage: Int) {
       siteUrl
       media {
         edges {
-          characterName
-          characterRole
           node {
             title {
               english
               native
             }
-            averageScore
-            popularity
-            trending
-            favourites
           }
         }
       }
@@ -79,8 +72,9 @@ const Roll = new Command({
       return message.reply('Insufficient balance! You need at least 25 coins to roll <PandaCry:908492210717200485>');
 
     const variables = {
-      page: Math.floor(Math.random() * 116313) + 1,
+      page: Math.floor(Math.random() * 3000),
       perPage: 1,
+      sort: "FAVOURITES_DESC"
     };
 
     let character;
@@ -122,15 +116,15 @@ const Roll = new Command({
       character?.dateOfBirth?.day &&
       character?.dateOfBirth?.month &&
       character.dateOfBirth.day + ' ' + months[character.dateOfBirth.month - 1];
-    const sukoa = Math.floor((+charLink?.node?.popularity + +charLink?.node?.favourites) / 100);
+    const sukoa = Math.floor(+character?.favourites / 10);
     let colour: Discord.ColorResolvable = 'LIGHT_GREY';
-    if (sukoa < 10) {
+    if (sukoa < 100) {
       colour = 'LIGHT_GREY';
-    } else if (sukoa < 100) {
+    } else if (sukoa < 250) {
       colour = 'DARK_RED';
-    } else if (sukoa < 800) {
+    } else if (sukoa < 500) {
       colour = 'BLUE';
-    } else if (sukoa < 1750) {
+    } else if (sukoa < 1000) {
       colour = 'AQUA';
     } else {
       colour = 'GOLD';
@@ -142,21 +136,21 @@ const Roll = new Command({
       .setImage(`${character.image.large}`)
       .setColor(colour)
       .setFields([
-        // {
-        //   name: 'Gender',
-        //   value: `${character.gender ?? unknown}`,
-        //   inline: true,
-        // },
+        {
+          name: 'Gender',
+          value: `${character.gender ?? unknown}`,
+          inline: true,
+        },
         // {
         //   name: 'Age',
         //   value: `${character.age ?? unknown}`,
         //   inline: true,
         // },
-        // {
-        //   name: 'Birthday',
-        //   value: `${birthday ?? unknown}`,
-        //   inline: true,
-        // },
+        {
+          name: 'Birthday',
+          value: `${birthday ?? unknown}`,
+          inline: true,
+        },
         {
           name: 'Sukoa 💎',
           value: `${sukoa}`,

@@ -4,8 +4,8 @@ import Command, { CommandType } from '../Structures/Command';
 import getOrCreateUser from '../utils/getOrCreateUser'; 
 
 const Give = new Command({
-  name: 'balance',
-  description: 'View your balance',
+  name: 'profile',
+  description: 'View your profile',
   type: CommandType.TEXT,
   slashCommandOptions: [],
   permission: 'SEND_MESSAGES',
@@ -24,9 +24,9 @@ const Give = new Command({
     if (!user) return message.reply('Unable to check your balance');
 
     embed
-      .setTitle('Balance')
+      .setTitle('Profile')
       .setAuthor(author.username)
-      .setDescription(`Use these coins to roll and purchase anime waifus and husbandos <:pepelove:917313905422893146>`)
+      .setDescription(`Each roll costs 25 coins for an anime waifu or husbando <:pepelove:917313905422893146>`)
       .setThumbnail(<string>author.avatarURL({ dynamic: true }))
       .setColor('GREEN')
       .setFields([
