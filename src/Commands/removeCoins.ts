@@ -43,7 +43,7 @@ const Give = new Command({
       coinsRemoved = Math.min(user.coins, amount);
       user.coins -= coinsRemoved;
       await user.save();
-      const msg = await message.reply(`Success!💸 Removed ${coinsRemoved} coins from ${userObj.user.username}`);
+      const msg = await message.reply(`Success! 📉 Removed ${coinsRemoved} coins from ${userObj.user.username}`);
     } catch(err) {
       console.log('Unable to remove coins from user:', err);
     }
