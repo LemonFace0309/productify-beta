@@ -4,6 +4,7 @@ import { UserDocument } from '../../Models/User';
 import { Character } from '../types';
 
 interface Variables {
+  id?: number;
   page: number;
   perPage: number;
   sort: string[];
@@ -25,7 +26,6 @@ query ($page: Int, $perPage: Int, $sort: [CharacterSort], $search: String) {
       name {
         full
         native
-        userPreferred
       }
       description
       image {
@@ -63,7 +63,6 @@ query ($id: Int) {
     name {
       full
       native
-      userPreferred
     }
     description
     image {
@@ -94,9 +93,9 @@ query ($id: Int) {
 `;
 
 const getCharacter = async (id: number | null, name: string = '', isRandom: boolean = false) => {
-  const query = id ? idQuery : searchQuery;
+  let query = searchQuery;
 
-  let variables: Variables = {
+  const variables: Variables = {
     page: Math.floor(Math.random() * 3000),
     perPage: 1,
     sort: ['FAVOURITES_DESC'],
@@ -108,11 +107,16 @@ const getCharacter = async (id: number | null, name: string = '', isRandom: bool
     variables.search = name;
   }
 
+  if (id) {
+    query = idQuery;
+    variables.id = id;
+  }
+
   const result = await axios.post('https://graphql.anilist.co', {
     query,
     variables,
   });
-  const character: Character | undefined = result.data?.data?.Page?.characters[0];
+  let character: Character | undefined = id ? result.data.data.Character : result.data.data?.Page?.characters[0];
 
   return character;
 };

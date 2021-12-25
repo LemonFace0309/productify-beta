@@ -5,7 +5,7 @@ export interface CharacterDocument extends mongoose.Document {
   sukoa: number;
 }
 
-const CharacterSchema = new mongoose.Schema<CharacterDocument>({
+export const CharacterSchema = new mongoose.Schema<CharacterDocument>({
   characterId: {
     type: Number,
     required: true,
@@ -16,4 +16,4 @@ const CharacterSchema = new mongoose.Schema<CharacterDocument>({
   },
 });
 
-export default CharacterSchema;
+export default mongoose.model<CharacterDocument>('Character', CharacterSchema);

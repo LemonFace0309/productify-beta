@@ -23,13 +23,13 @@ const Give = new Command({
 
     const user = await getOrCreateUser(userObj.id);
 
-    if (!user) return message.reply('Unable to check your balance');
+    if (!user) return message.reply('Unable to check your profile');
 
     const totalSukao = user.characters.reduce((acc, val) => (acc += val.sukoa), 0) ?? 0;
     embed
       .setTitle('Profile')
-      .setAuthor(author.username)
-      .setDescription(`Each roll costs 25 coins for an anime waifu or husbando <:pepelove:917313905422893146>`)
+      // .setAuthor(author.username)
+      .setDescription(`Knowledge is Power <:PandaCool:908492210679455786>`)
       .setThumbnail(<string>author.avatarURL({ dynamic: true }))
       .setColor('GREEN')
       .setFields([
@@ -47,7 +47,7 @@ const Give = new Command({
 
     if (user.mainCharacter) {
       try {
-        const character: Character | undefined = await getCharacter(user.mainCharacter.id);
+        const character: Character | undefined = await getCharacter(user.mainCharacter.characterId);
         if (character) {
           embed.setImage(character.image.large);
         }

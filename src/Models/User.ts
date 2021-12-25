@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import CharacterSchema, { CharacterDocument } from './Character';
+import { CharacterSchema, CharacterDocument } from './Character';
 export interface UserDocument extends mongoose.Document {
   userId: string;
   goalsStreak: number;
