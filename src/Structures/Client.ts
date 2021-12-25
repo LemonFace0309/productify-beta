@@ -16,14 +16,12 @@ class Client extends Discord.Client {
   readonly prefix: string;
   commands: Discord.Collection<string, Command>;
   timers: Discord.Collection<string, NodeJS.Timer>;
-  aniListUrl: string;
 
   constructor() {
     super({ intents });
     this.prefix = process.env.PREFIX!;
     this.commands = new Discord.Collection();
     this.timers = new Discord.Collection();
-    this.aniListUrl = 'https://graphql.anilist.co';
   }
 
   start(token: string) {

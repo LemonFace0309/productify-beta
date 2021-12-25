@@ -1,12 +1,17 @@
 import mongoose from 'mongoose';
 
 export interface CharacterDocument extends mongoose.Document {
-  characterId: string;
+  characterId: number;
+  sukoa: number;
 }
 
 const CharacterSchema = new mongoose.Schema<CharacterDocument>({
   characterId: {
-    type: String,
+    type: Number,
+    required: true,
+  },
+  sukoa: {
+    type: Number,
     required: true,
   },
 });

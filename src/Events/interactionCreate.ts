@@ -1,6 +1,6 @@
 import Event from '../Structures/Event';
 
-import { isCommand, isPermissions } from '../utils/predicates';
+import { isCommand, isPermissions } from '../lib/predicates';
 
 const InteractionCreate = new Event('interactionCreate', (client, interaction) => {
   if (interaction.user.bot || !interaction.isCommand() || !interaction.guild) return;

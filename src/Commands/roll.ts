@@ -1,54 +1,10 @@
 import Discord, { GuildMember } from 'discord.js';
-import axios from 'axios';
 
 import Command, { CommandType } from '../Structures/Command';
-import getOrCreateUser from '../utils/getOrCreateUser';
-
-const query = `
-query ($page: Int, $perPage: Int) {
-  Page (page: $page, perPage: $perPage) {
-    pageInfo {
-      total
-      currentPage
-      lastPage
-      hasNextPage
-      perPage
-    }
-    characters (sort: FAVOURITES_DESC) {
-      id
-      name {
-        full
-        native
-        userPreferred
-      }
-      description
-      image {
-        large
-        medium
-      }
-      favourites
-      age
-      dateOfBirth {
-        year
-        month
-        day
-      }
-      gender
-      siteUrl
-      media {
-        edges {
-          node {
-            title {
-              english
-              native
-            }
-          }
-        }
-      }
-    }
-  }
-}
-`;
+import { Character } from '../lib/types';
+import getOrCreateUser from '../lib/utils/getOrCreateUser';
+import getCharacter from '../lib/utils/getCharacter';
+import replyCharacter from '../lib/utils/replyCharacter';
 
 const Roll = new Command({
   name: 'r',
@@ -71,94 +27,22 @@ const Roll = new Command({
     if (user.coins < 25)
       return message.reply('Insufficient balance! You need at least 25 coins to roll <PandaCry:908492210717200485>');
 
-    const variables = {
-      page: Math.floor(Math.random() * 3000),
-      perPage: 1,
-      sort: "FAVOURITES_DESC"
-    };
-
-    let character;
-    let charLink;
+    let character: Character;
     try {
-      const result = await axios.post(client.aniListUrl, {
-        query,
-        variables,
-      });
-      character = result.data?.data?.Page?.characters[0];
-      charLink = character.media.edges[0];
-
+      character = await getCharacter(user, '', true);
       user.coins -= 25;
       // @ts-ignore
-      user.characters.push({ characterId: character.id });
+      user.characters.push({
+        characterId: character.id,
+        sukoa: Math.floor(character.favourites / 10),
+      });
       await user.save();
     } catch (err) {
       console.warn(err);
+      return message.reply('😱 Unable to roll! Please try again later');
     }
 
-    const embed = new Discord.MessageEmbed();
-
-    const months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-    const unknown = 'Unknown';
-    const birthday =
-      character?.dateOfBirth?.day &&
-      character?.dateOfBirth?.month &&
-      character.dateOfBirth.day + ' ' + months[character.dateOfBirth.month - 1];
-    const sukoa = Math.floor(+character?.favourites / 10);
-    let colour: Discord.ColorResolvable = 'LIGHT_GREY';
-    if (sukoa < 100) {
-      colour = 'LIGHT_GREY';
-    } else if (sukoa < 250) {
-      colour = 'DARK_RED';
-    } else if (sukoa < 500) {
-      colour = 'BLUE';
-    } else if (sukoa < 1000) {
-      colour = 'AQUA';
-    } else {
-      colour = 'GOLD';
-    }
-
-    embed
-      .setTitle(character?.name?.full)
-      .setDescription(`${charLink?.node?.title?.english ?? charLink?.node?.title?.native}`)
-      .setImage(`${character.image.large}`)
-      .setColor(colour)
-      .setFields([
-        {
-          name: 'Gender',
-          value: `${character.gender ?? unknown}`,
-          inline: true,
-        },
-        // {
-        //   name: 'Age',
-        //   value: `${character.age ?? unknown}`,
-        //   inline: true,
-        // },
-        {
-          name: 'Birthday',
-          value: `${birthday ?? unknown}`,
-          inline: true,
-        },
-        {
-          name: 'Sukoa 💎',
-          value: `${sukoa}`,
-          inline: true,
-        },
-      ]);
-
-    message.reply({ embeds: [embed] });
+    replyCharacter(message, character);
   },
 });
 

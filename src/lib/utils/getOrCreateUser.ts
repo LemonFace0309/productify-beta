@@ -1,7 +1,8 @@
-import User, { UserDocument } from '../Models/User';
+import User, { UserDocument } from '../../Models/User';
 
 const getOrCreateUser = async (userId: string) => {
-  let user: UserDocument & { _id: any } | null = null;
+  // let user: UserDocument & { _id: any } | null = null;
+  let user: UserDocument | null = null;
   try {
     user = await User.findOne({ userId: userId });
     if (!user) {

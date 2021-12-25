@@ -1,7 +1,7 @@
 import { Client, Collection, GuildChannel, GuildMember } from 'discord.js';
 
 import Process from '../Structures/Process';
-import getOrCreateUser from '../utils/getOrCreateUser';
+import getOrCreateUser from '../lib/utils/getOrCreateUser';
 
 const waitUntilQuarterHour = async () => {
   return new Promise((resolve, reject) =>

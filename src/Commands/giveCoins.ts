@@ -1,7 +1,7 @@
 import { GuildMember } from 'discord.js';
 
 import Command, { CommandType } from '../Structures/Command';
-import getOrCreateUser from '../utils/getOrCreateUser'; 
+import getOrCreateUser from '../lib/utils/getOrCreateUser'; 
 
 const Give = new Command({
   name: 'give',
