@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-import { UserDocument } from '../../Models/User';
 import { Character } from '../types';
 
 interface Variables {
@@ -96,7 +95,7 @@ const getCharacter = async (id: number | null, name: string = '', isRandom: bool
   let query = searchQuery;
 
   const variables: Variables = {
-    page: Math.floor(Math.random() * 3000),
+    page: Math.floor(Math.random() * 5000),
     perPage: 1,
     sort: ['FAVOURITES_DESC'],
     search: null,
