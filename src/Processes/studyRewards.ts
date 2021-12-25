@@ -38,7 +38,7 @@ const releaseRewards = (client: Client) => {
         });
       });
     } catch (err) {
-      console.error('Unable to reward members:', err);
+      console.warn('Unable to reward members:', err);
     }
   });
 };

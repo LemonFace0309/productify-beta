@@ -6,6 +6,7 @@ export interface UserDocument extends mongoose.Document {
   goalsStreak: number;
   coins: number;
   characters: CharacterDocument[];
+  mainCharacter?: CharacterDocument;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -29,6 +30,10 @@ const UserSchema = new mongoose.Schema<UserDocument>(
       type: [CharacterSchema],
       required: true,
       default: [],
+    },
+    mainCharacter: {
+      type: CharacterSchema,
+      required: false,
     },
   },
   {

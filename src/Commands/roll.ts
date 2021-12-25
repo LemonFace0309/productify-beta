@@ -27,9 +27,12 @@ const Roll = new Command({
     if (user.coins < 25)
       return message.reply('Insufficient balance! You need at least 25 coins to roll <PandaCry:908492210717200485>');
 
-    let character: Character;
+    let character: Character | undefined;
     try {
-      character = await getCharacter(user, '', true);
+      character = await getCharacter(null, '', true);
+
+      if (!character) throw new Error("Returned undefined while rolling for character");
+
       user.coins -= 25;
       // @ts-ignore
       user.characters.push({

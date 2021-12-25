@@ -62,7 +62,7 @@ const Goals = new Event('messageCreate', async (client, message) => {
     await message.react('908492212139094027');
     await message.react('908492210679455786');
   } catch (error) {
-    console.error('One of the emojis failed to react:', error);
+    console.warn('One of the emojis failed to react:', error);
   }
 });
 

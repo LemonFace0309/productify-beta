@@ -1,7 +1,9 @@
 import Discord, { GuildMember } from 'discord.js';
 
 import Command, { CommandType } from '../Structures/Command';
-import getOrCreateUser from '../lib/utils/getOrCreateUser'; 
+import { Character } from '../lib/types';
+import getCharacter from '../lib/utils/getCharacter';
+import getOrCreateUser from '../lib/utils/getOrCreateUser';
 
 const Give = new Command({
   name: 'profile',
@@ -23,6 +25,7 @@ const Give = new Command({
 
     if (!user) return message.reply('Unable to check your balance');
 
+    const totalSukao = user.characters.reduce((acc, val) => (acc += val.sukoa), 0) ?? 0;
     embed
       .setTitle('Profile')
       .setAuthor(author.username)
@@ -35,7 +38,23 @@ const Give = new Command({
           value: `${user.coins ?? 0} coins`,
           inline: true,
         },
-      ])
+        {
+          name: 'Total Sukoa',
+          value: `${totalSukao} 💎`,
+          inline: true,
+        },
+      ]);
+
+    if (user.mainCharacter) {
+      try {
+        const character: Character | undefined = await getCharacter(user.mainCharacter.id);
+        if (character) {
+          embed.setImage(character.image.large);
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    }
 
     message.reply({ embeds: [embed] });
   },
