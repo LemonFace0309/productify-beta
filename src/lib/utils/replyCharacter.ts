@@ -2,6 +2,22 @@ import Discord from 'discord.js';
 
 import { Character, MediaEdge } from '../types';
 
+export const replyCharacters = (message: Discord.Message | Discord.CommandInteraction, characters: Character[]) => {
+  const embed = new Discord.MessageEmbed();
+  let description: string = '';
+
+  characters.forEach((character) => {
+    const charLink = character?.media?.edges[0];
+    const sukoa = Math.floor(character.favourites / 10);
+    description += `${character.name.full} - ${
+      charLink?.node?.title.english ?? charLink?.node?.title.native
+    } - ${sukoa} 💎\n`;
+  });
+
+  embed.setDescription(description);
+  message.reply({ embeds: [embed] });
+};
+
 const replyCharacter = (message: Discord.Message | Discord.CommandInteraction, character: Character) => {
   const embed = new Discord.MessageEmbed();
 

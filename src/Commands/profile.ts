@@ -15,9 +15,9 @@ const Give = new Command({
     message = message as Discord.Message;
 
     const embed = new Discord.MessageEmbed();
-    const author = message.author;
+    const authorId = args.length > 1 ? args[1].slice(3, -1) : message.author.id;
 
-    const userObj: GuildMember | undefined = message.guild?.members.cache.find((member) => member.id === author.id);
+    const userObj: GuildMember | undefined = message.guild?.members.cache.find((member) => member.id === authorId);
 
     if (!userObj) return message.reply(`User does not exist!`);
 
@@ -30,7 +30,7 @@ const Give = new Command({
       .setTitle('Profile')
       // .setAuthor(author.username)
       .setDescription(`Knowledge is Power <:PandaCool:908492210679455786>`)
-      .setThumbnail(<string>author.avatarURL({ dynamic: true }))
+      .setThumbnail(<string>userObj.user.avatarURL({ dynamic: true }))
       .setColor('GREEN')
       .setFields([
         {

@@ -91,6 +91,28 @@ query ($id: Int) {
 }
 `;
 
+export const getCharacters = async (quantity: number, name: string = '', isRandom: boolean = false) => {
+  const variables: Variables = {
+    page: Math.floor(Math.random() * 5000),
+    perPage: quantity,
+    sort: ['FAVOURITES_DESC'],
+    search: null,
+  };
+
+  if (!isRandom) {
+    variables.page = 1;
+    variables.search = name;
+  }
+
+  const result = await axios.post('https://graphql.anilist.co', {
+    searchQuery,
+    variables,
+  });
+  const characters: Character[] | undefined = result.data.data?.Page?.characters;
+
+  return characters;
+};
+
 const getCharacter = async (id: number | null, name: string = '', isRandom: boolean = false) => {
   let query = searchQuery;
 
@@ -121,3 +143,4 @@ const getCharacter = async (id: number | null, name: string = '', isRandom: bool
 };
 
 export default getCharacter;
+
