@@ -2,18 +2,19 @@ import Discord from 'discord.js';
 
 import { Character, MediaEdge } from '../types';
 
-export const replyCharacters = (message: Discord.Message | Discord.CommandInteraction, characters: Character[]) => {
+export const replyCharacters = (message: Discord.Message | Discord.CommandInteraction, characters: Character[], title: string | null = null) => {
   const embed = new Discord.MessageEmbed();
   let description: string = '';
 
-  characters.forEach((character) => {
+  characters.forEach((character, rank) => {
     const charLink = character?.media?.edges[0];
     const sukoa = Math.floor(character.favourites / 10);
-    description += `${character.name.full} - ${
+    description += `**#${rank + 1} ${character.name.full}:** ${
       charLink?.node?.title.english ?? charLink?.node?.title.native
     } - ${sukoa} 💎\n`;
   });
 
+  if (title) embed.setAuthor(title);
   embed.setDescription(description);
   message.reply({ embeds: [embed] });
 };

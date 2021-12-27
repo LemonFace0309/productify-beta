@@ -15,8 +15,9 @@ const Roll = new Command({
     message = message as Discord.Message;
 
     let characters: Character[] | undefined;
+    const quantity = 10;
     try {
-      characters = await getCharacters(30, '', true);
+      characters = await getCharacters(quantity, null, false);
 
       if (!characters) throw new Error('Unable to get characters');
 
@@ -25,7 +26,7 @@ const Roll = new Command({
       return message.reply('😱 Unable to get characters');
     }
 
-    replyCharacters(message, characters);
+    replyCharacters(message, characters, `🏆 TOP ${quantity}`);
   },
 });
 

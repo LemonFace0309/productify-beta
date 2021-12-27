@@ -91,7 +91,7 @@ query ($id: Int) {
 }
 `;
 
-export const getCharacters = async (quantity: number, name: string = '', isRandom: boolean = false) => {
+export const getCharacters = async (quantity: number, name: string | null = '', isRandom: boolean = false) => {
   const variables: Variables = {
     page: Math.floor(Math.random() * 5000),
     perPage: quantity,
@@ -105,7 +105,7 @@ export const getCharacters = async (quantity: number, name: string = '', isRando
   }
 
   const result = await axios.post('https://graphql.anilist.co', {
-    searchQuery,
+    query: searchQuery,
     variables,
   });
   const characters: Character[] | undefined = result.data.data?.Page?.characters;
@@ -113,7 +113,7 @@ export const getCharacters = async (quantity: number, name: string = '', isRando
   return characters;
 };
 
-const getCharacter = async (id: number | null, name: string = '', isRandom: boolean = false) => {
+const getCharacter = async (id: number | null, name: string | null = '', isRandom: boolean = false) => {
   let query = searchQuery;
 
   const variables: Variables = {
