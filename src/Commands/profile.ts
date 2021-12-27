@@ -15,7 +15,12 @@ const Give = new Command({
     message = message as Discord.Message;
 
     const embed = new Discord.MessageEmbed();
-    const authorId = args.length > 1 ? args[1].slice(3, -1) : message.author.id;
+    console.log(args);
+    let authorId = message.author.id;
+    if (args.length > 1) {
+      const startingIndex = args[1][2] == '!' ? 3 : 2;
+      authorId = args[1].slice(startingIndex, -1);
+    }
 
     const userObj: GuildMember | undefined = message.guild?.members.cache.find((member) => member.id === authorId);
 

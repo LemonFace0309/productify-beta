@@ -31,7 +31,7 @@ const Give = new Command({
 
       const id = character.id;
       const hasCharacter = user.characters.some((c) => c.characterId === id);
-      if (!hasCharacter) return message.reply(`You don't down ${character.name.full}!`);
+      if (!hasCharacter) return message.reply(`You don't own ${character.name.full}!`);
 
       const mainCharacter = new Character({
         characterId: id,
