@@ -47,7 +47,7 @@ const Roll = new Command({
         description += `**#${rank} ${character.name}:** ${character.mediaName} - ${character.sukoa} 💎\n`;
 
         if (isFirstPage) {
-          embed.setAuthor(`Inventory: ${quantity} characters owned`);
+          embed.setAuthor(`**Inventory:** ${quantity} characters owned <:Panda:908492210264211457>`);
           isFirstPage = false;
         }
       }

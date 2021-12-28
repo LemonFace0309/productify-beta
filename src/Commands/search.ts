@@ -14,11 +14,20 @@ const Roll = new Command({
   run: async (message, args, client) => {
     message = message as Discord.Message;
 
-    const characterName = args.slice(1).join(' ');
+    let endSlice = args.length;
+    let index = 1;
+    // @ts-ignore
+    if (!isNaN(args[args.length - 1])) {
+      endSlice = -1;
+      index = Number(args[args.length - 1]);
+    }
+    const characterName = args.slice(1, endSlice).join(' ');
+    console.log(characterName);
+    console.log(index);
 
     let character: Character | undefined;
     try {
-      character = await getCharacter(null, characterName, false);
+      character = await getCharacter(null, characterName, index - 1, false);
 
       if (!character) return message.reply("Can't find character!");
     } catch (err) {

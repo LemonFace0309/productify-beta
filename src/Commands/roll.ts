@@ -31,12 +31,11 @@ const Roll = new Command({
 
     let character: Character | undefined;
     try {
-      character = await getCharacter(null, '', true);
+      character = await getCharacter(null, '', 0, true);
 
       if (!character) throw new Error('Returned undefined while rolling for character');
 
       user.coins -= rollCost;
-      // @ts-ignore
       user.characters.push(createCharacterObject(character));
       await user.save();
     } catch (err) {

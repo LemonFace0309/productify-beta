@@ -113,7 +113,7 @@ export const getCharacters = async (quantity: number, name: string | null = '', 
   return characters;
 };
 
-const getCharacter = async (id: number | null, name: string | null = '', isRandom: boolean = false) => {
+const getCharacter = async (id: number | null, name: string | null = '', index = 0, isRandom: boolean = false) => {
   let query = searchQuery;
 
   const variables: Variables = {
@@ -133,11 +133,15 @@ const getCharacter = async (id: number | null, name: string | null = '', isRando
     variables.id = id;
   }
 
+  if (index) {
+    variables.perPage = 10;
+  }
+
   const result = await axios.post('https://graphql.anilist.co', {
     query,
     variables,
   });
-  let character: Character | undefined = id ? result.data.data.Character : result.data.data?.Page?.characters[0];
+  let character: Character | undefined = id ? result.data.data.Character : result.data.data?.Page?.characters[index];
 
   return character;
 };

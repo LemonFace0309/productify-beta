@@ -26,7 +26,7 @@ const Give = new Command({
 
     let character: CharacterType | undefined;
     try {
-      character = await getCharacter(null, characterName, false);
+      character = await getCharacter(null, characterName, 0, false);
 
       if (!character) return message.reply("Can't find character!");
 
