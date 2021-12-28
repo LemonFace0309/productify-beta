@@ -15,7 +15,7 @@ const Give = new Command({
     message = message as Discord.Message;
 
     const embed = new Discord.MessageEmbed();
-    console.log(args);
+
     let authorId = message.author.id;
     if (args.length > 1) {
       const startingIndex = args[1][2] == '!' ? 3 : 2;

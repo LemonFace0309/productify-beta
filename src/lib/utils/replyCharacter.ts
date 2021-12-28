@@ -4,7 +4,7 @@ import { Character, MediaEdge } from '../types';
 
 export const replyCharacters = (message: Discord.Message | Discord.CommandInteraction, characters: Character[], title: string | null = null) => {
   const embed = new Discord.MessageEmbed();
-  let description: string = '';
+  let description = '';
 
   characters.forEach((character, rank) => {
     const charLink = character?.media?.edges[0];

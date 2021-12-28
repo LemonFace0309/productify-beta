@@ -1,9 +1,9 @@
-import Discord, { GuildMember } from 'discord.js';
+import Discord from 'discord.js';
 
 import Command, { CommandType } from '../Structures/Command';
 import { Character } from '../lib/types';
 import { getCharacters } from '../lib/utils/getCharacter';
-import { replyCharacters } from '../lib/utils/replyCharacter';
+import paginationEmbed from '../lib/utils/paginationEmbed';
 
 const Roll = new Command({
   name: 'top',
@@ -15,7 +15,7 @@ const Roll = new Command({
     message = message as Discord.Message;
 
     let characters: Character[] | undefined;
-    const quantity = 10;
+    const quantity = 50;
     try {
       characters = await getCharacters(quantity, null, false);
 
@@ -26,7 +26,40 @@ const Roll = new Command({
       return message.reply('😱 Unable to get characters');
     }
 
-    replyCharacters(message, characters, `🏆 TOP ${quantity}`);
+    // creating embed pages
+    const pages: Discord.MessageEmbed[] = [];
+    let isFirstPage = true;
+    for (let i = 0; i < Math.ceil(quantity / 15); ++i) {
+      const embed = new Discord.MessageEmbed();
+      let description = '';
+  
+      for (let j = 0; j < 15; ++j) {
+        const rank = (i * 15) + j + 1;
+        const character = characters[rank - 1];
+
+        if (!character) break;
+
+        const charLink = character?.media?.edges[0];
+        const sukoa = Math.floor(character.favourites / 10);
+        description += `**#${rank} ${character.name.full}:** ${
+          charLink?.node?.title.english ?? charLink?.node?.title.native
+        } - ${sukoa} 💎\n`;
+
+        if (isFirstPage) {
+          embed.setAuthor(`🏆 TOP ${quantity}`);
+          isFirstPage = false;
+        }
+      }
+      embed.setDescription(description);
+      pages.push(embed);
+    }
+
+    try {
+      await paginationEmbed(message, pages);
+    } catch (err) {
+      console.log(err);
+      message.reply('Unable to get top characters!')
+    }
   },
 });
 

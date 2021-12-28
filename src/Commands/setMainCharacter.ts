@@ -5,6 +5,7 @@ import Character from '../Models/Character';
 import { Character as CharacterType } from '../lib/types';
 import getCharacter from '../lib/utils/getCharacter';
 import getOrCreateUser from '../lib/utils/getOrCreateUser';
+import createCharacterObject from '../lib/utils/createCharacterObject';
 
 const Give = new Command({
   name: 'set',
@@ -33,10 +34,7 @@ const Give = new Command({
       const hasCharacter = user.characters.some((c) => c.characterId === id);
       if (!hasCharacter) return message.reply(`You don't own ${character.name.full}!`);
 
-      const mainCharacter = new Character({
-        characterId: id,
-        sukoa: Math.floor(character.favourites / 10),
-      });
+      const mainCharacter = createCharacterObject(character);
       user.mainCharacter = mainCharacter;
       await user.save();
     } catch (err) {
