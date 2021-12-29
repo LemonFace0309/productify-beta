@@ -1,25 +1,9 @@
 import Discord from 'discord.js';
 
-import { Character, MediaEdge } from '../types';
+import { Character } from '../types';
+import paginationEmbed from './paginationEmbed';
 
-export const replyCharacters = (message: Discord.Message | Discord.CommandInteraction, characters: Character[], title: string | null = null) => {
-  const embed = new Discord.MessageEmbed();
-  let description = '';
-
-  characters.forEach((character, rank) => {
-    const charLink = character?.media?.edges[0];
-    const sukoa = Math.floor(character.favourites / 10);
-    description += `**#${rank + 1} ${character.name.full}:** ${
-      charLink?.node?.title.english ?? charLink?.node?.title.native
-    } - ${sukoa} 💎\n`;
-  });
-
-  if (title) embed.setAuthor(title);
-  embed.setDescription(description);
-  message.reply({ embeds: [embed] });
-};
-
-const replyCharacter = (message: Discord.Message | Discord.CommandInteraction, character: Character) => {
+const embedCharacter = (character: Character) => {
   const embed = new Discord.MessageEmbed();
 
   const charLink = character?.media?.edges[0];
@@ -84,6 +68,50 @@ const replyCharacter = (message: Discord.Message | Discord.CommandInteraction, c
         inline: true,
       },
     ]);
+
+  return embed;
+};
+
+export const replyCharacterScroll = async (
+  message: Discord.Message | Discord.CommandInteraction,
+  characters: Character[]
+) => {
+  const pages: Discord.MessageEmbed[] = [];
+  characters.forEach((character) => {
+    pages.push(embedCharacter(character));
+  })
+
+  try {
+    await paginationEmbed(message, pages);
+  } catch (err) {
+    console.log(err);
+    message.reply('Unable to get users inventory!');
+  }
+};
+
+export const replyCharacterList = (
+  message: Discord.Message | Discord.CommandInteraction,
+  characters: Character[],
+  title: string | null = null
+) => {
+  const embed = new Discord.MessageEmbed();
+  let description = '';
+
+  characters.forEach((character, rank) => {
+    const charLink = character?.media?.edges[0];
+    const sukoa = Math.floor(character.favourites / 10);
+    description += `**#${rank + 1} ${character.name.full}:** ${
+      charLink?.node?.title.english ?? charLink?.node?.title.native
+    } - ${sukoa} 💎\n`;
+  });
+
+  if (title) embed.setAuthor(title);
+  embed.setDescription(description);
+  message.reply({ embeds: [embed] });
+};
+
+const replyCharacter = (message: Discord.Message | Discord.CommandInteraction, character: Character) => {
+  const embed = embedCharacter(character);
 
   message.reply({ embeds: [embed] });
 };

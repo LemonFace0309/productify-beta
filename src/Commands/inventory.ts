@@ -31,6 +31,8 @@ const Roll = new Command({
     let characters: CharacterDocument[] = user.characters;
     const quantity = characters.length;
 
+    if (quantity === 0) return message.reply(`${userObj.displayName} does not have any characters yet!`);
+
     // creating embed pages
     const pages: Discord.MessageEmbed[] = [];
     let isFirstPage = true;
@@ -59,7 +61,7 @@ const Roll = new Command({
       await paginationEmbed(message, pages);
     } catch (err) {
       console.log(err);
-      message.reply('Unable to get top characters!');
+      message.reply('Unable to get users inventory!');
     }
   },
 });

@@ -2,8 +2,8 @@ import Discord, { GuildMember } from 'discord.js';
 
 import Command, { CommandType } from '../Structures/Command';
 import { Character } from '../lib/types';
-import getCharacter from '../lib/utils/getCharacter';
-import replyCharacter from '../lib/utils/replyCharacter';
+import getCharacter, { getCharacters } from '../lib/utils/getCharacter';
+import replyCharacter, { replyCharacterScroll } from '../lib/utils/replyCharacter';
 
 const Roll = new Command({
   name: 's',
@@ -14,28 +14,32 @@ const Roll = new Command({
   run: async (message, args, client) => {
     message = message as Discord.Message;
 
-    let endSlice = args.length;
-    let index = 1;
-    // @ts-ignore
-    if (!isNaN(args[args.length - 1])) {
-      endSlice = -1;
-      index = Number(args[args.length - 1]);
-    }
-    const characterName = args.slice(1, endSlice).join(' ');
-    console.log(characterName);
-    console.log(index);
-
-    let character: Character | undefined;
     try {
-      character = await getCharacter(null, characterName, index - 1, false);
+      // @ts-ignore
+      if (!isNaN(args[args.length - 1])) {
+        const index = Number(args[args.length - 1]);
+        const characterName = args.slice(1, -1).join(' ');
 
-      if (!character) return message.reply("Can't find character!");
+        const character = await getCharacter(null, characterName, index - 1, false);
+
+        if (!character) return message.reply("Can't find character!");
+
+        replyCharacter(message, character);
+      } else {
+        const characterName = args.slice(1).join(' ');
+
+        const characters = await getCharacters(5, characterName);
+
+        if (!characters) return message.reply("Can't find character!");
+
+        if (characters.length == 1) return replyCharacter(message, characters[0]);
+      
+        replyCharacterScroll(message, characters);
+      }
     } catch (err) {
       console.warn(err);
       return message.reply("Can't find character!");
     }
-
-    replyCharacter(message, character);
   },
 });
 
