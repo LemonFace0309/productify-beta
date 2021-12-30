@@ -19,15 +19,18 @@ const waitUntilQuarterHour = async () => {
 
 const releaseRewards = (client: Client) => {
   const guilds = client.guilds.cache;
+  console.log('Guilds:', guilds);
 
   guilds.forEach((guild) => {
     const channels = guild.channels.cache;
     const studyChannels = channels.filter((channel) => channel.isVoice() && channel instanceof GuildChannel);
+    console.log('studyChannels:', studyChannels.size);
     const members = studyChannels
       .map((sc) => sc.members as Collection<string, GuildMember>)
       .reduce((acc, val) => acc.concat(val), new Collection());
 
     // rewarding each member with 100 coins
+    console.log('members:', members);
     try {
       members.forEach((member) => {
         getOrCreateUser(member.id)

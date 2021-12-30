@@ -7,7 +7,7 @@ const getOrCreateUser = async (userId: string) => {
     user = await User.findOne({ userId: userId });
     if (!user) {
       // creating new user
-      user = new User({ userId: userId, goalsStreak: 0, coins: 100 });
+      user = new User({ userId: userId, goalsStreak: 0, coins: 250 });
       await user.save();
     }
   } catch (err) {
