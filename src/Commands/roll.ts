@@ -27,7 +27,7 @@ const Roll = new Command({
     if (!user) return message.reply('Unable to roll. Try again later 😴');
 
     if (user.coins < rollCost)
-      return message.reply(`Insufficient balance! You need at least ${rollCost} coins to roll <PandaCry:908492210717200485>`);
+      return message.reply(`Insufficient balance! You need at least ${rollCost} coins to roll <:PandaCry:908492210717200485>`);
 
     let character: Character | undefined;
     try {
