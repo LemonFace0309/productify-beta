@@ -3,7 +3,7 @@ import { GuildMember } from 'discord.js';
 import Command, { CommandType } from '../Structures/Command';
 import getOrCreateUser from '../lib/utils/getOrCreateUser'; 
 
-const Give = new Command({
+const RemoveCoins = new Command({
   name: 'remove',
   description: 'Remove coins from someone',
   type: CommandType.SLASH,
@@ -50,4 +50,4 @@ const Give = new Command({
   },
 });
 
-module.exports = Give;
+module.exports = RemoveCoins;

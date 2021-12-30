@@ -5,7 +5,7 @@ import { Character } from '../lib/types';
 import getCharacter from '../lib/utils/getCharacter';
 import getOrCreateUser from '../lib/utils/getOrCreateUser';
 
-const Give = new Command({
+const Profile = new Command({
   name: 'profile',
   description: 'View your profile',
   type: CommandType.TEXT,
@@ -65,4 +65,4 @@ const Give = new Command({
   },
 });
 
-module.exports = Give;
+module.exports = Profile;

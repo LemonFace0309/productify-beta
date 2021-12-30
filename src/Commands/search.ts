@@ -1,11 +1,10 @@
 import Discord, { GuildMember } from 'discord.js';
 
 import Command, { CommandType } from '../Structures/Command';
-import { Character } from '../lib/types';
 import getCharacter, { getCharacters } from '../lib/utils/getCharacter';
 import replyCharacter, { replyCharacterScroll } from '../lib/utils/replyCharacter';
 
-const Roll = new Command({
+const Search = new Command({
   name: 's',
   description: 'Search for an anime character',
   type: CommandType.TEXT,
@@ -43,4 +42,4 @@ const Roll = new Command({
   },
 });
 
-module.exports = Roll;
+module.exports = Search;

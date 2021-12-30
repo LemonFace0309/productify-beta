@@ -5,7 +5,7 @@ import { Character } from '../lib/types';
 import { getCharacters } from '../lib/utils/getCharacter';
 import { replyCharacterList } from '../lib/utils/replyCharacter';
 
-const Roll = new Command({
+const Top = new Command({
   name: 'top',
   description: 'Get the top characters',
   type: CommandType.TEXT,
@@ -63,4 +63,4 @@ const Roll = new Command({
   },
 });
 
-module.exports = Roll;
+module.exports = Top;

@@ -1,13 +1,13 @@
 import Discord, { GuildMember } from 'discord.js';
 
 import Command, { CommandType } from '../Structures/Command';
-import Character from '../Models/Character';
+import { CharacterDocument } from '../Models/Character';
 import { Character as CharacterType } from '../lib/types';
-import getCharacter from '../lib/utils/getCharacter';
+import { getCharacters } from '../lib/utils/getCharacter';
 import getOrCreateUser from '../lib/utils/getOrCreateUser';
 import createCharacterObject from '../lib/utils/createCharacterObject';
 
-const Give = new Command({
+const SetMainCharacter = new Command({
   name: 'set',
   description: 'Set your main character',
   type: CommandType.TEXT,
@@ -24,17 +24,18 @@ const Give = new Command({
     const user = await getOrCreateUser(userObj.id);
     if (!user) return message.reply('Unable to set your main character');
 
-    let character: CharacterType | undefined;
+    let characters: CharacterType[] | undefined;
+    let mainCharacter: CharacterDocument;
     try {
-      character = await getCharacter(null, characterName, 0, false);
+      characters = await getCharacters(5, characterName);
 
-      if (!character) return message.reply("Can't find character!");
+      if (!characters || characters.length == 0) return message.reply("Can't find character!");
 
-      const id = character.id;
-      const hasCharacter = user.characters.some((c) => c.characterId === id);
-      if (!hasCharacter) return message.reply(`You don't own ${character.name.full}!`);
+      const userCharacterIds = user.characters.map((c) => c.characterId);
+      const matchedCharacter = characters.find((c) => userCharacterIds.includes(c.id));
+      if (!matchedCharacter) return message.reply(`You don't own ${characters[0].name.full ?? characterName}!`);
 
-      const mainCharacter = createCharacterObject(character);
+      mainCharacter = createCharacterObject(matchedCharacter);
       user.mainCharacter = mainCharacter;
       await user.save();
     } catch (err) {
@@ -42,8 +43,8 @@ const Give = new Command({
       return message.reply("Can't find character!");
     }
 
-    message.reply(`Successfully changed your main character to ${character.name.full}`);
+    message.reply(`Successfully changed your main character to ${mainCharacter.name}`);
   },
 });
 
-module.exports = Give;
+module.exports = SetMainCharacter;
