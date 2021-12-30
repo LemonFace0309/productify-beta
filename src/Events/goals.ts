@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import Event from '../Structures/Event';
 import User, { UserDocument } from '../Models/User';
+import getOrCreateUser from '../lib/utils/getOrCreateUser';
 
 interface quote {
   q: string;
@@ -16,6 +17,13 @@ const getQuote = async () => {
   return quote;
 };
 
+const rewardUser = (user: UserDocument) => {
+  const award = 100; // awarded coins
+
+  user.goalsStreak++;
+  user.coins += award;
+};
+
 const Goals = new Event('messageCreate', async (client, message) => {
   if (message.author.bot) return;
   if (message.channelId != '911033664496861234') return; // goals channel
@@ -23,20 +31,21 @@ const Goals = new Event('messageCreate', async (client, message) => {
 
   const authorId = message.author.id;
 
-  let user: UserDocument & { _id: any; } | null;
+  let user: UserDocument | null;
   try {
     user = await User.findOne({ userId: authorId });
     if (!user) {
       // creating new user
-      user = new User({ userId: authorId, goalsStreak: 1, coins: 0 });
-      user.save();
+      user = (await getOrCreateUser(authorId)) as UserDocument;
+      rewardUser(user);
+      await user.save();
     } else {
       // updating user streak
       const now = new Date();
       const diffInMilliSeconds = now.getTime() - user.updatedAt.getTime();
       const hours = Math.floor(diffInMilliSeconds / 36e5);
       if (hours >= 20) {
-        user.goalsStreak++;
+        rewardUser(user);
         await user.save();
       }
     }
