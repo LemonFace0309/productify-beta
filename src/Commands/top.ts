@@ -3,7 +3,7 @@ import Discord from 'discord.js';
 import Command, { CommandType } from '../Structures/Command';
 import { Character } from '../lib/types';
 import { getCharacters } from '../lib/utils/getCharacter';
-import paginationEmbed from '../lib/utils/paginationEmbed';
+import { replyCharacterList } from '../lib/utils/replyCharacter';
 
 const Roll = new Command({
   name: 'top',
@@ -55,7 +55,7 @@ const Roll = new Command({
     }
 
     try {
-      await paginationEmbed(message, pages);
+      await replyCharacterList(message, characters, `🏆 TOP ${quantity}`);
     } catch (err) {
       console.log(err);
       message.reply('Unable to get top characters!')

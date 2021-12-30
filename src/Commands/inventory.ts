@@ -2,7 +2,7 @@ import Discord, { GuildMember } from 'discord.js';
 
 import Command, { CommandType } from '../Structures/Command';
 import getOrCreateUser from '../lib/utils/getOrCreateUser';
-import paginationEmbed from '../lib/utils/paginationEmbed';
+import { replyCharacterList } from '../lib/utils/replyCharacter'
 import { CharacterDocument } from '../Models/Character';
 
 const Roll = new Command({
@@ -33,32 +33,12 @@ const Roll = new Command({
 
     if (quantity === 0) return message.reply(`${userObj.displayName} does not have any characters yet!`);
 
-    // creating embed pages
-    const pages: Discord.MessageEmbed[] = [];
-    let isFirstPage = true;
-    for (let i = 0; i < Math.ceil(quantity / 15); ++i) {
-      const embed = new Discord.MessageEmbed();
-      let description = '';
-
-      for (let j = 0; j < 15; ++j) {
-        const rank = i * 15 + j + 1;
-        const character = characters[rank - 1];
-
-        if (!character) break;
-
-        description += `**#${rank} ${character.name}:** ${character.mediaName} - ${character.sukoa} 💎\n`;
-
-        if (isFirstPage) {
-          embed.setAuthor(`**Inventory:** ${quantity} characters owned <:Panda:908492210264211457>`);
-          isFirstPage = false;
-        }
-      }
-      embed.setDescription(description);
-      pages.push(embed);
-    }
-
     try {
-      await paginationEmbed(message, pages);
+      await replyCharacterList(
+        message,
+        characters,
+        `Inventory: ${quantity} characters owned <:Panda:908492210264211457>`
+      );
     } catch (err) {
       console.log(err);
       message.reply('Unable to get users inventory!');

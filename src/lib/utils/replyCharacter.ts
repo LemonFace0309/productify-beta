@@ -1,6 +1,8 @@
 import Discord from 'discord.js';
 
 import { Character } from '../types';
+import { CharacterDocument } from '../../Models/Character';
+import { isApiCharacter } from '../predicates';
 import paginationEmbed from './paginationEmbed';
 
 const embedCharacter = (character: Character) => {
@@ -79,7 +81,7 @@ export const replyCharacterScroll = async (
   const pages: Discord.MessageEmbed[] = [];
   characters.forEach((character) => {
     pages.push(embedCharacter(character));
-  })
+  });
 
   try {
     await paginationEmbed(message, pages);
@@ -89,25 +91,45 @@ export const replyCharacterScroll = async (
   }
 };
 
-export const replyCharacterList = (
+export const replyCharacterList = async (
   message: Discord.Message | Discord.CommandInteraction,
-  characters: Character[],
-  title: string | null = null
+  characters: Character[] | CharacterDocument[],
+  title: string | null = null,
+  perPage = 15
 ) => {
-  const embed = new Discord.MessageEmbed();
-  let description = '';
+  const quantity = characters.length;
+  const pages: Discord.MessageEmbed[] = [];
+  let isFirstPage = true;
+  for (let i = 0; i < Math.ceil(quantity / perPage); ++i) {
+    const embed = new Discord.MessageEmbed();
+    let description = '';
 
-  characters.forEach((character, rank) => {
-    const charLink = character?.media?.edges[0];
-    const sukoa = Math.floor(character.favourites / 10);
-    description += `**#${rank + 1} ${character.name.full}:** ${
-      charLink?.node?.title.english ?? charLink?.node?.title.native
-    } - ${sukoa} 💎\n`;
-  });
+    for (let j = 0; j < 15; ++j) {
+      const rank = i * 15 + j + 1;
+      const character = characters[rank - 1];
 
-  if (title) embed.setAuthor(title);
-  embed.setDescription(description);
-  message.reply({ embeds: [embed] });
+      if (!character) break;
+
+      if (isApiCharacter(character)) {
+        const charLink = character?.media?.edges[0];
+        const sukoa = Math.floor(character.favourites / 10);
+        description += `**#${rank} ${character.name.full}:** ${
+          charLink?.node?.title.english ?? charLink?.node?.title.native
+        } - ${sukoa} 💎\n`;
+      } else {
+        description += `**#${rank} ${character.name}:** ${character.mediaName} - ${character.sukoa} 💎\n`;
+      }
+
+      if (isFirstPage) {
+        if (title) embed.setAuthor(title);
+        isFirstPage = false;
+      }
+    }
+    embed.setDescription(description);
+    pages.push(embed);
+  }
+
+  await paginationEmbed(message, pages);
 };
 
 const replyCharacter = (message: Discord.Message | Discord.CommandInteraction, character: Character) => {
