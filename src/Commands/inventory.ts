@@ -5,7 +5,7 @@ import getOrCreateUser from '../lib/utils/getOrCreateUser';
 import { replyCharacterList } from '../lib/utils/replyCharacter'
 import { CharacterDocument } from '../Models/Character';
 
-const Roll = new Command({
+const Inventory = new Command({
   name: 'inv',
   description: 'Get all your characters',
   type: CommandType.TEXT,
@@ -28,7 +28,7 @@ const Roll = new Command({
 
     if (!user) return message.reply('Unable to check your inventory');
 
-    let characters: CharacterDocument[] = user.characters;
+    const characters: CharacterDocument[] = user.characters.sort((c1, c2) => c1.sukoa > c2.sukoa ? -1 : 1);
     const quantity = characters.length;
 
     if (quantity === 0) return message.reply(`${userObj.displayName} does not have any characters yet!`);
@@ -41,9 +41,9 @@ const Roll = new Command({
       );
     } catch (err) {
       console.log(err);
-      message.reply('Unable to get users inventory!');
+      message.reply(`Unable to collect your inventory!`);
     }
   },
 });
 
-module.exports = Roll;
+module.exports = Inventory;
