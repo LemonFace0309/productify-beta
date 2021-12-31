@@ -37,7 +37,7 @@ const Inventory = new Command({
       await replyCharacterList(
         message,
         characters,
-        `Inventory: ${quantity} characters owned <:Panda:908492210264211457>`
+        `Inventory: ${quantity} characters owned 📦`
       );
     } catch (err) {
       console.log(err);
