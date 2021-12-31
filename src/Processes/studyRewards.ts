@@ -18,30 +18,31 @@ const waitUntilQuarterHour = async () => {
 };
 
 const releaseRewards = async (client: Client) => {
-  const guilds = await client.guilds.fetch();
+  const guilds = client.guilds.cache;
 
-  Promise.all(guilds.map(async (g) => {
-    const guild = await g.fetch();
-    const channels = guild.channels.cache;
-    const studyChannels = channels.filter((channel) => channel.isVoice() && channel instanceof GuildChannel);
-    const members = studyChannels
-      .map((sc) => sc.members as Collection<string, GuildMember>)
-      .reduce((acc, val) => acc.concat(val), new Collection());
+  Promise.all(
+    guilds.map(async (guild) => {
+      try {
+        const channels = await guild.channels.fetch(undefined, { force: true });
+        const studyChannels = channels.filter((channel) => channel.isVoice() && channel instanceof GuildChannel);
+        const members = studyChannels
+          .map((sc) => sc.members as Collection<string, GuildMember>)
+          .reduce((acc, val) => acc.concat(val), new Collection());
 
-    // rewarding each member with 100 coins
-    try {
-      members.forEach((member) => {
-        getOrCreateUser(member.id)
-        .then((user) => {
-          if (!user) return;
-          user.coins += 100;
-          user.save();
+        // rewarding each member with 100 coins
+        console.log('members:', members.size);
+        members.forEach((member) => {
+          getOrCreateUser(member.id).then((user) => {
+            if (!user) return;
+            user.coins += 100;
+            user.save();
+          });
         });
-      });
-    } catch (err) {
-      console.warn('Unable to reward members:', err);
-    }
-  }));
+      } catch (err) {
+        console.warn('Unable to reward members:', err);
+      }
+    })
+  );
 };
 
 const StudyRewards = new Process({

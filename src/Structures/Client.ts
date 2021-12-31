@@ -10,7 +10,7 @@ import Command from './Command';
 import Event from './Event';
 import Process from './Process';
 
-const intents = new Discord.Intents(['GUILDS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS']);
+const intents = new Discord.Intents(['GUILDS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'GUILD_VOICE_STATES']);
 
 class Client extends Discord.Client {
   readonly prefix: string;
