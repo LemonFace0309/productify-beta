@@ -17,20 +17,18 @@ const waitUntilQuarterHour = async () => {
   );
 };
 
-const releaseRewards = (client: Client) => {
-  const guilds = client.guilds.cache;
-  console.log('Guilds:', guilds);
+const releaseRewards = async (client: Client) => {
+  const guilds = await client.guilds.fetch();
 
-  guilds.forEach((guild) => {
+  Promise.all(guilds.map(async (g) => {
+    const guild = await g.fetch();
     const channels = guild.channels.cache;
     const studyChannels = channels.filter((channel) => channel.isVoice() && channel instanceof GuildChannel);
-    console.log('studyChannels:', studyChannels.size);
     const members = studyChannels
       .map((sc) => sc.members as Collection<string, GuildMember>)
       .reduce((acc, val) => acc.concat(val), new Collection());
 
     // rewarding each member with 100 coins
-    console.log('members:', members);
     try {
       members.forEach((member) => {
         getOrCreateUser(member.id)
@@ -43,7 +41,7 @@ const releaseRewards = (client: Client) => {
     } catch (err) {
       console.warn('Unable to reward members:', err);
     }
-  });
+  }));
 };
 
 const StudyRewards = new Process({
@@ -54,7 +52,7 @@ const StudyRewards = new Process({
     releaseRewards(client);
     setInterval(() => {
       releaseRewards(client);
-    }, 900000); // 15 minutes
+    }, 900000); // 15 minutes = 900000ms
   },
 });
 
