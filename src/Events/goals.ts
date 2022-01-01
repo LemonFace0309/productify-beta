@@ -4,6 +4,8 @@ import axios from 'axios';
 import Event from '../Structures/Event';
 import User, { UserDocument } from '../Models/User';
 import getOrCreateUser from '../lib/utils/getOrCreateUser';
+import dotenv from 'dotenv';
+dotenv.config();
 
 interface quote {
   q: string;
@@ -22,11 +24,12 @@ const rewardUser = (user: UserDocument) => {
 
   user.goalsStreak++;
   user.coins += award;
+  user.goalsUpdatedAt = new Date();
 };
 
 const Goals = new Event('messageCreate', async (client, message) => {
   if (message.author.bot) return;
-  if (message.channelId != '911033664496861234') return; // goals channel
+  if (message.channelId != process.env.GOALS_CHANNEL_ID) return; // goals channel
   // if (message.channelId != '908105673831768084') return; // moderators channel
 
   const authorId = message.author.id;
@@ -42,7 +45,7 @@ const Goals = new Event('messageCreate', async (client, message) => {
     } else {
       // updating user streak
       const now = new Date();
-      const diffInMilliSeconds = now.getTime() - user.updatedAt.getTime();
+      const diffInMilliSeconds = now.getTime() - user.goalsUpdatedAt.getTime();
       const hours = Math.floor(diffInMilliSeconds / 36e5);
       if (hours >= 20) {
         rewardUser(user);
@@ -55,7 +58,7 @@ const Goals = new Event('messageCreate', async (client, message) => {
 
   getQuote()
     .then((res: quote) => {
-      const motivationChannel = client.channels.cache.find((c) => c.id == '913350444489773097');
+      const motivationChannel = client.channels.cache.find((c) => c.id == process.env.MOTIVATION_CHANNEL_ID);
       if (motivationChannel && motivationChannel.isText()) {
         motivationChannel.send(`<@${authorId}> You're on a ${user?.goalsStreak} day streak 🔥\n${res.q} -${res.a}`);
       } else {

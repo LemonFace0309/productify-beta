@@ -4,6 +4,7 @@ import { CharacterSchema, CharacterDocument } from './Character';
 export interface UserDocument extends mongoose.Document {
   userId: string;
   goalsStreak: number;
+  goalsUpdatedAt: Date;
   coins: number;
   characters: CharacterDocument[];
   mainCharacter?: CharacterDocument;
@@ -19,6 +20,14 @@ const UserSchema = new mongoose.Schema<UserDocument>(
     },
     goalsStreak: {
       type: Number,
+      required: true,
+    },
+    goalsUpdatedAt: {
+      type: Date,
+      default: () => {
+        const _u = this as any;
+        return _u.createdAt ?? Date.now();
+      },
       required: true,
     },
     coins: {
