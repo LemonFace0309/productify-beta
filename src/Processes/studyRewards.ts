@@ -30,7 +30,6 @@ const releaseRewards = async (client: Client) => {
           .reduce((acc, val) => acc.concat(val), new Collection());
 
         // rewarding each member with 100 coins
-        console.log('members:', members.size);
         members.forEach((member) => {
           getOrCreateUser(member.id).then((user) => {
             if (!user) return;

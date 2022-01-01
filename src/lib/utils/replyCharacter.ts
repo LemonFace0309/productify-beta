@@ -87,7 +87,7 @@ export const replyCharacterScroll = async (
     await paginationEmbed(message, pages);
   } catch (err) {
     console.log(err);
-    message.reply('Unable to get users inventory!');
+    message.reply('Unable to get character!');
   }
 };
 
