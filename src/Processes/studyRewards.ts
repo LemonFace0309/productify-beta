@@ -66,6 +66,7 @@ const notifyGuild = async (client: Client, reward: number, recipients: GuildMemb
     for (let j = 0; j < 15; ++j) {
       if (isFirstPage) {
         embed.setTitle(`Releasing ${reward} coins to these users! <:PandaCapitalist:908492210696224839>`);
+        embed.setAuthor(`Study for 15 minutes in a voice channel or lofi radio to be rewarded!`);
         isFirstPage = false;
       }
 
@@ -95,7 +96,7 @@ const StudyRewards = new Process({
     console.log('Reached quarter hour. Releasing first round of rewards!');
 
     const recipients = await releaseRewards(client, reward);
-    notifyGuild(client, reward, recipients);
+    await notifyGuild(client, reward, recipients);
     setInterval(async () => {
       const recipients = await releaseRewards(client, reward);
       notifyGuild(client, reward, recipients);
