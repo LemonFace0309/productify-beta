@@ -75,7 +75,7 @@ const notifyGuild = async (client: Client, reward: number, recipients: GuildMemb
 
       if (!member) break;
 
-      description += member.displayName;
+      description += `• ${member.displayName}\n`;
     }
     embed.setDescription(description);
     pages.push(embed);
