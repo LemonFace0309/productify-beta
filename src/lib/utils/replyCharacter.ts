@@ -84,7 +84,8 @@ export const replyCharacterScroll = async (
   });
 
   try {
-    await paginationEmbed(message, pages);
+    if (!message.channel) throw new Error('Channel does not exist');
+    await paginationEmbed(message.channel, pages);
   } catch (err) {
     console.log(err);
     message.reply('Unable to get character!');
@@ -129,7 +130,13 @@ export const replyCharacterList = async (
     pages.push(embed);
   }
 
-  await paginationEmbed(message, pages);
+  try {
+    if (!message.channel) throw new Error('Channel does not exist');
+    await paginationEmbed(message.channel, pages);
+  } catch (err) {
+    console.log(err);
+    message.reply('Unable to get characters!');
+  }
 };
 
 const replyCharacter = (message: Discord.Message | Discord.CommandInteraction, character: Character) => {

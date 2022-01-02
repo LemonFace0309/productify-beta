@@ -1,7 +1,7 @@
 import Discord from 'discord.js';
 
 const paginationEmbed = async (
-  msg: Discord.Message | Discord.CommandInteraction,
+  channel: Discord.TextBasedChannels,
   pages: Discord.MessageEmbed[],
   emojiList = ['⏪', '⏩'],
   timeout = 120000
@@ -9,9 +9,7 @@ const paginationEmbed = async (
   if (emojiList.length !== 2) throw new Error('Need two emojis.');
   let page = 0;
 
-  if (!msg.channel) throw new Error('Unable to send message in channel');
-
-  const curPage = await msg.channel.send({
+  const curPage = await channel.send({
     embeds: [pages[page].setFooter(`Page ${page + 1} / ${pages.length}`)],
   });
 
@@ -21,8 +19,8 @@ const paginationEmbed = async (
     time: timeout,
   });
 
-  reactionCollector.on('collect', (reaction) => {
-    reaction.users.remove(msg instanceof Discord.Message ? msg.author : undefined);
+  reactionCollector.on('collect', (reaction, user) => {
+    reaction.users.remove(user);
     switch (reaction.emoji.name) {
       case emojiList[0]:
         page = page > 0 ? --page : pages.length - 1;
