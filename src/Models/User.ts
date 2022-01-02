@@ -24,10 +24,6 @@ const UserSchema = new mongoose.Schema<UserDocument>(
     },
     goalsUpdatedAt: {
       type: Date,
-      default: () => {
-        const _u = this as any;
-        return _u.createdAt ?? Date.now();
-      },
       required: true,
     },
     coins: {

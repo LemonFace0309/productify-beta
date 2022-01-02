@@ -11,7 +11,7 @@ const getOrCreateUser = async (userId: string) => {
       await user.save();
     }
   } catch (err) {
-    console.log('Unable to get user:', err);
+    console.log('Unable to get or create user:', err);
   }
 
   return user;

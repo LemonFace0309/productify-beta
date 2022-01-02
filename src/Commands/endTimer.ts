@@ -1,6 +1,5 @@
-import Discord from 'discord.js';
-
 import Command, { CommandType } from '../Structures/Command';
+import Timer, { TimerDocument } from '../Models/Timer';
 
 const endTimer = new Command({
   name: 'end-timer',
@@ -18,6 +17,16 @@ const endTimer = new Command({
 
     clearInterval(intervalTimer);
     client.timers.delete(channelId);
+
+    try {
+      const timer = await Timer.findOne({ guildId: <string>message.guildId });
+
+      if (!timer) throw new Error('This guild does not exist in the databse');
+      timer.channels = timer.channels.filter((c) => c !== channelId);
+      await timer.save();
+    } catch (err) {
+      console.warn(err);
+    }
     return message.reply({ content: 'Timer successfully removed!', ephemeral: true });
   },
 });
