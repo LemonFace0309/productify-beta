@@ -91,7 +91,7 @@ query ($id: Int) {
 }
 `;
 
-export const getCharacters = async (quantity: number, name: string | null = '', isRandom: boolean = false) => {
+export const getCharacters = async (quantity: number, name: string | null = null, isRandom: boolean = false) => {
   const variables: Variables = {
     page: Math.floor(Math.random() * 5000),
     perPage: quantity,
@@ -99,20 +99,24 @@ export const getCharacters = async (quantity: number, name: string | null = '', 
     search: null,
   };
 
-  if (!isRandom) {
+  let characters: Character[] | undefined = [];
+  if (isRandom) {
+    const randoms = await Promise.all([...new Array(quantity)].map(() => getCharacter(null, '', 0, true)));
+
+    if (randoms.some((c) => c === undefined)) return undefined;
+    characters = randoms as Character[];
+  } else {
     variables.page = 1;
     variables.search = name;
+
+    const result = await axios.post('https://graphql.anilist.co', {
+      query: searchQuery,
+      variables,
+    });
+    characters = result.data.data?.Page?.characters;
   }
 
-  // const result = await axios.post('https://graphql.anilist.co', {
-  //   query: searchQuery,
-  //   variables,
-  // });
-  // const characters: Character[] | undefined = result.data.data?.Page?.characters;
-  const characters = await Promise.all([...new Array(quantity)].map(() => getCharacter(null, '', 0, true)));
-
-  if (characters.some((c) => c === undefined)) return undefined;
-  return characters as Character[];
+  return characters;
 };
 
 const getCharacter = async (id: number | null, name: string | null = '', index = 0, isRandom: boolean = false) => {

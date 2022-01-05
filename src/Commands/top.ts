@@ -17,7 +17,7 @@ const Top = new Command({
     let characters: Character[] | undefined;
     const quantity = 50;
     try {
-      characters = await getCharacters(quantity, null, false);
+      characters = await getCharacters(quantity);
 
       if (!characters) throw new Error('Unable to get characters');
 
