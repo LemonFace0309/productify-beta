@@ -104,13 +104,15 @@ export const getCharacters = async (quantity: number, name: string | null = '', 
     variables.search = name;
   }
 
-  const result = await axios.post('https://graphql.anilist.co', {
-    query: searchQuery,
-    variables,
-  });
-  const characters: Character[] | undefined = result.data.data?.Page?.characters;
+  // const result = await axios.post('https://graphql.anilist.co', {
+  //   query: searchQuery,
+  //   variables,
+  // });
+  // const characters: Character[] | undefined = result.data.data?.Page?.characters;
+  const characters = await Promise.all([...new Array(quantity)].map(() => getCharacter(null, '', 0, true)));
 
-  return characters;
+  if (characters.some((c) => c === undefined)) return undefined;
+  return characters as Character[];
 };
 
 const getCharacter = async (id: number | null, name: string | null = '', index = 0, isRandom: boolean = false) => {
@@ -147,4 +149,3 @@ const getCharacter = async (id: number | null, name: string | null = '', index =
 };
 
 export default getCharacter;
-
